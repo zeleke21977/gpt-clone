@@ -1,0 +1,48 @@
+.header {
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  border-bottom: 1px solid var(--border-color);
+
+  color: var(--text-secondary);
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+  min-width: 0;
+
+  padding-left: 40px;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 3px 9px;
+
+  border-radius: 999px;
+
+  background: var(--bg-hover);
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
