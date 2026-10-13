@@ -2,27 +2,41 @@ import "dotenv/config";
 import mysql from "mysql2/promise";
 
 const db = mysql.createPool({
-  host: process.env.db_host,
+  host: process.env.db_host?.trim(),
   port: Number(process.env.db_port || 3306),
-  user: process.env.db_user,
+  user: process.env.db_user?.trim(),
   password: process.env.db_password,
-  database: process.env.db_database,
-  charset: "utf8mb4", // Support for emojis and special characters
+  database: process.env.db_database?.trim(),
+  charset: "utf8mb4",
 
-  // Many hosted MySQL services (Aiven, PlanetScale, Railway...) require SSL.
-  // Set db_ssl=true to turn it on.
-  ssl: process.env.db_ssl === "true" ? { rejectUnauthorized: false } : undefined,
+  ssl:
+    process.env.db_ssl?.trim().toLowerCase() === "true"
+      ? { rejectUnauthorized: false }
+      : undefined,
 
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
 
+// Test the database connection without exposing credentials.
 try {
-  await db.query("SELECT 1");
-  console.log("✅ MySQL connected successfully!");
+  const connection = await db.getConnection();
+
+  try {
+    await connection.query("SELECT 1");
+    console.log("✅ MySQL connected successfully!");
+  } finally {
+    connection.release();
+  }
 } catch (error) {
-  console.error("❌ MySQL connection failed:", error.message);
+  console.error("❌ MySQL connection failed:", {
+    code: error.code,
+    message: error.message,
+  });
+
+  // Stop startup if the database is unavailable.
+  throw error;
 }
 
 export default db;
