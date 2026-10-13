@@ -6,7 +6,7 @@ import { MODES, isValidMode, buildSystemInstruction } from "../prompts.js";
 // GEMINI CONFIG
 // ======================================================
 
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 const gemini = new GoogleGenAI({
   // Initialize the GoogleGenAI client
@@ -116,9 +116,10 @@ export const searchSessionsService = async (query) => {
 export const getSessionMessagesService = async (sessionId, limit = 100) => {
   const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 100, 1), 500);
 
-  const [owned] = await db.execute(`SELECT id FROM chat_sessions WHERE id = ?`, [
-    sessionId,
-  ]);
+  const [owned] = await db.execute(
+    `SELECT id FROM chat_sessions WHERE id = ?`,
+    [sessionId],
+  );
 
   if (owned.length === 0) {
     throw new Error("Chat session not found.");
